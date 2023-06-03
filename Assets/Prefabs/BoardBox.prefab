@@ -125,7 +125,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6625030300004089641}
         m_TargetAssemblyTypeName: BoxManager, Assembly-CSharp
-        m_MethodName: FillBox
+        m_MethodName: BoxClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

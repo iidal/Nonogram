@@ -1,19 +1,11 @@
 using UnityEngine;
 public static class PuzzleBlackboard
 {
-    private static bool m_setting_mark;
-    public static int levelNumber;
+    private static bool m_setting_mark = true;
 
-    public static void LoadNewLevel()
-    {
-        Debug.Log("A new level is being loaded");
-    }
-
-
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void SetMarkModeOn(bool set_mark)
     {
-
         m_setting_mark = set_mark;
         Debug.Log(m_setting_mark);
     }
@@ -24,4 +16,5 @@ public static class PuzzleBlackboard
 
         return m_setting_mark;
     }
+    ////////////////////////////////
 }

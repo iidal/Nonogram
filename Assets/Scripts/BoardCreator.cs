@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 public class BoardCreator : MonoBehaviour
 {
@@ -15,6 +15,7 @@ public class BoardCreator : MonoBehaviour
     public GameObject m_column_parent;
     public GameObject m_row_hint;
     public GameObject m_row_parent;
+    PuzzleSession m_puzzle_session;
 
 
     public string[] m_hints_rows = new string[5];
@@ -23,10 +24,10 @@ public class BoardCreator : MonoBehaviour
     public int rows, columns;
 
     // Start is called before the first frame update
-    void Start()
+    public void StartBoardInit(bool[,] board, PuzzleSession session)
     {
-        bool[,] board = { { false, false, true, false, false }, { true, true, true, true, true }, { false, false, true, false, false }, { false, false, true, false, false }, { false, false, true, true, false } };
 
+        m_puzzle_session = session;
         PopulateRowsColums(rows, m_row_hint, m_row_parent, m_hints_rows); //rows
         PopulateRowsColums(columns, m_column_hint, m_column_parent, m_hints_columns); //columns
 
@@ -54,8 +55,6 @@ public class BoardCreator : MonoBehaviour
 
     void PopulateBoard(int width, int height, bool[,] board)
     {
-        //also needs as parameter the true/falses for each box, probably a 2d array is best
-
         m_box_parent.GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         m_box_parent.GetComponent<GridLayoutGroup>().constraintCount = width;
         for (int i = 0; i < width; i++)
@@ -63,7 +62,8 @@ public class BoardCreator : MonoBehaviour
             for (int j = 0; j < height; j++)
             {
                 GameObject box = Instantiate(m_boardbox, new Vector3(0, 0, 0), Quaternion.identity, m_box_parent.transform);
-                box.GetComponent<BoxManager>().InitBox(board[i,j]);
+                Tuple<int, int> coords = new Tuple<int, int>(i, j);
+                box.GetComponent<BoxManager>().InitBox(board[i,j], coords, m_puzzle_session);
                 // add each instantiated box to a list 
                 // give needed info. 1) is the box empty or not
             }

@@ -7,6 +7,7 @@ using System;
 public class PuzzleSession : MonoBehaviour
 {
     public BoardCreator m_board_creator;
+    public EndViewDialog m_endViewDialog;
     //test stuff
     //5
     bool[,] board = { { false, false, true, false, false }, { true, true, true, true, true }, { false, false, true, false, false }, { false, false, true, false, false }, { false, false, true, true, false } };
@@ -31,6 +32,7 @@ public class PuzzleSession : MonoBehaviour
     void Start()
     {
         m_board_creator.StartBoardInit(board, this);
+        m_endViewDialog.Hide();
         m_current_lives = m_max_lives;
     }
 
@@ -56,7 +58,7 @@ public class PuzzleSession : MonoBehaviour
         img_lives[m_current_lives].sprite = img_life_lost;
         if (m_current_lives <= 0){
              Debug.Log("game over");
-            //TODO show game over screen
+            m_endViewDialog.Show(false);
         }
     }
 
@@ -74,6 +76,7 @@ public class PuzzleSession : MonoBehaviour
             }
         }
         Debug.Log("board finished");
+        m_endViewDialog.Show(true);
         return true;
     }
 

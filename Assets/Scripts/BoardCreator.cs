@@ -46,7 +46,7 @@ public class BoardCreator : MonoBehaviour
 
         for (int i = 0; i < size; i++)
         {
-            GameObject text_obj = Instantiate(element, new Vector3(0, 0, 0), Quaternion.identity, parent.transform);
+            GameObject text_obj = Instantiate(element, parent.transform.position, Quaternion.identity, parent.transform);
             text_obj.GetComponent<TextMeshProUGUI>().text = hints[i];
             // add each instantiated box to a list (maybe)
         }
@@ -61,7 +61,7 @@ public class BoardCreator : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                GameObject box = Instantiate(m_boardbox, new Vector3(0, 0, 0), Quaternion.identity, m_box_parent.transform);
+                GameObject box = Instantiate(m_boardbox, m_box_parent.transform.position, Quaternion.identity, m_box_parent.transform);
                 Tuple<int, int> coords = new Tuple<int, int>(i, j);
                 box.GetComponent<BoxManager>().InitBox(board[i,j], coords, m_puzzle_session);
                 // add each instantiated box to a list 

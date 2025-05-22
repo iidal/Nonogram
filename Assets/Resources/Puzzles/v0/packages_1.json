@@ -1,0 +1,23 @@
+{
+    "packageName": "Sample Package 1", 
+    "puzzles": [
+    {
+        "name": "Puzzle 1",
+        "completed": false,
+        "grid": [
+            [false, true, false],
+            [true, false, true],
+            [false, true, false]
+            ]
+        },
+        {
+            "name": "Puzzle 2",
+            "completed": true,
+            "grid": [
+                [true, true, false],
+                [false, true, false],
+                [true, false, true]
+            ]
+        }
+    ]
+}

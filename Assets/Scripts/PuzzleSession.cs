@@ -34,6 +34,7 @@ public class PuzzleSession : MonoBehaviour
         m_board_creator.StartBoardInit(board, this);
         m_endViewDialog.Hide();
         m_current_lives = m_max_lives;
+        
     }
 
     public void SwitchMarkMode()

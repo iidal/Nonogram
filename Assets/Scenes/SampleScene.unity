@@ -490,6 +490,8 @@ MonoBehaviour:
   m_packButtonPrefab: {fileID: 2930858742160686908, guid: a95a21f77a9b1844fa58d96cf05e8373, type: 3}
   m_puzzlesParent: {fileID: 845760106}
   m_puzzleButtonPrefab: {fileID: 2930858742160686908, guid: f682942beea1fa04f87416021b1dd68a, type: 3}
+  m_puzzleSessionParent: {fileID: 1559604441}
+  m_startMenuParent: {fileID: 380163527}
 --- !u!1 &428671996
 GameObject:
   m_ObjectHideFlags: 0

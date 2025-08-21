@@ -29,7 +29,7 @@ public class PuzzleSession : MonoBehaviour
     [SerializeField] Image[] img_lives = new Image[3];
     [SerializeField] Sprite img_life_lost;
     /////
-    void Start()
+    public void StartPuzzle()
     {
         m_board_creator.StartBoardInit(board, this);
         m_endViewDialog.Hide();

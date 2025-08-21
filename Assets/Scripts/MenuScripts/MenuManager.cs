@@ -10,10 +10,15 @@ public class MenuManager : MonoBehaviour
     int m_numberOfPuzzlePacks = 0; // get pack folder amount / scriptable object amounts etc
     List<int> numberOfPuzzlesInPack = new(); // how many puzzles in each pack, will be packs and the puzzles in them
 
+    // Menu items
     public Transform m_packParent;
     public GameObject m_packButtonPrefab;
     public Transform m_puzzlesParent;
     public GameObject m_puzzleButtonPrefab;
+
+    // Moving to puzzle session
+    public GameObject m_puzzleSessionParent;
+    public GameObject m_startMenuParent; // TODO create a class that controls more of the general flow, a manager that enables and disables views, so that we dont keep disabling classes from themselves
     /////
     void Start()
     {
@@ -51,6 +56,9 @@ public class MenuManager : MonoBehaviour
     {
         //open puzzle
         Debug.Log("open puzzle " + puzzleId);
+        m_startMenuParent.SetActive(false);
+        m_puzzleSessionParent.SetActive(true);
+        m_puzzleSessionParent.GetComponent<PuzzleSession>().StartPuzzle();
     }
 
     // get here a list of puzzle packs in resources

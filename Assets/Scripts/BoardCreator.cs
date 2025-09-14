@@ -23,16 +23,13 @@ public class BoardCreator : MonoBehaviour
 
     public int rows, columns;
 
-    // Start is called before the first frame update
     public void StartBoardInit(bool[,] board, PuzzleSession session)
     {
-
+        // only supporting puzzles of same width and height for now
         m_puzzle_session = session;
         PopulateRowsColums(rows, m_row_hint, m_row_parent, m_hints_rows); //rows
         PopulateRowsColums(columns, m_column_hint, m_column_parent, m_hints_columns); //columns
-
         PopulateBoard(5, 5, board);
-
     }
 
     // Update is called once per frame
@@ -55,8 +52,10 @@ public class BoardCreator : MonoBehaviour
 
     void PopulateBoard(int width, int height, bool[,] board)
     {
+        float cellSize = m_box_parent.GetComponent<RectTransform>().rect.width/width;
         m_box_parent.GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         m_box_parent.GetComponent<GridLayoutGroup>().constraintCount = width;
+        m_box_parent.GetComponent<GridLayoutGroup>().cellSize = new Vector2(cellSize, cellSize);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)

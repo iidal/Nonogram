@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Data;
+using System.Linq;
 
 public class BoardCreator : MonoBehaviour
 {
@@ -11,9 +13,9 @@ public class BoardCreator : MonoBehaviour
     // first it will need the size of the board
     public GameObject m_boardbox;
     public GameObject m_box_parent;
-    public GameObject m_column_hint;
+    public GameObject m_column_hint;    // hint prefab for each column
     public GameObject m_column_parent;
-    public GameObject m_row_hint;
+    public GameObject m_row_hint; // hint prefab for each row
     public GameObject m_row_parent;
     PuzzleSession m_puzzle_session;
 
@@ -23,49 +25,112 @@ public class BoardCreator : MonoBehaviour
 
     public int rows, columns;
 
-    public void StartBoardInit(bool[,] board, PuzzleSession session)
+    public void StartBoardInit(PuzzleScriptable puzzleConfig, PuzzleSession session)
     {
         // only supporting puzzles of same width and height for now
         m_puzzle_session = session;
-        PopulateRowsColums(rows, m_row_hint, m_row_parent, m_hints_rows); //rows
-        PopulateRowsColums(columns, m_column_hint, m_column_parent, m_hints_columns); //columns
-        PopulateBoard(5, 5, board);
+        List<string> rowsHints = CreateRowsHints(puzzleConfig.rows);
+        List<string> columnsHints = CreateColumnsHints(puzzleConfig.rows);
+        PopulateRowsColums(m_row_hint, m_row_parent, rowsHints); //rows
+        PopulateRowsColums(m_column_hint, m_column_parent, columnsHints); //columns
+
+        PopulateBoard(puzzleConfig);
     }
 
-    // Update is called once per frame
-    void Update()
+    void PopulateBoard(PuzzleScriptable puzzleConfig)
     {
-
+        float cellSize = m_box_parent.GetComponent<RectTransform>().rect.width / puzzleConfig.rowCount;
+        m_box_parent.GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        m_box_parent.GetComponent<GridLayoutGroup>().constraintCount = puzzleConfig.rowCount;
+        m_box_parent.GetComponent<GridLayoutGroup>().cellSize = new Vector2(cellSize, cellSize);
+        int rowIndex = 0;
+        foreach (PuzzleScriptable.Row row in puzzleConfig.rows)
+        {
+            for (int i = 0; i < row.row.Length; i++)
+            {
+                GameObject box = Instantiate(m_boardbox, m_box_parent.transform.position, Quaternion.identity, m_box_parent.transform);
+                Tuple<int, int> coords = new Tuple<int, int>(rowIndex, i);
+                box.GetComponent<BoxManager>().InitBox(row.row[i], coords, m_puzzle_session);
+            }
+            rowIndex++;
+        }
     }
 
-    void PopulateRowsColums(int size, GameObject element, GameObject parent, string[] hints)
+    void PopulateRowsColums(GameObject element, GameObject parent, List<string> hints)
     {
-
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < hints.Count; i++)
         {
             GameObject text_obj = Instantiate(element, parent.transform.position, Quaternion.identity, parent.transform);
             text_obj.GetComponent<TextMeshProUGUI>().text = hints[i];
             // add each instantiated box to a list (maybe)
         }
     }
-
-
-    void PopulateBoard(int width, int height, bool[,] board)
+    //============================================================================================================
+    // Generater hints, this is logic that (if at all possible) could be done in the config tool by giving f.ex.
+    //  python code that the tool runs to generate the hints when creating the puzzle config
+    List<string> CreateRowsHints(PuzzleScriptable.Row[] rows)
     {
-        float cellSize = m_box_parent.GetComponent<RectTransform>().rect.width/width;
-        m_box_parent.GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-        m_box_parent.GetComponent<GridLayoutGroup>().constraintCount = width;
-        m_box_parent.GetComponent<GridLayoutGroup>().cellSize = new Vector2(cellSize, cellSize);
-        for (int i = 0; i < width; i++)
+        List<string> hints = new();
+        foreach (PuzzleScriptable.Row row in rows)
         {
-            for (int j = 0; j < height; j++)
+            string hint = "";
+            int consecutiveCells = 0;
+            for (int rowIndex = 0; rowIndex < row.row.Length; rowIndex++)
             {
-                GameObject box = Instantiate(m_boardbox, m_box_parent.transform.position, Quaternion.identity, m_box_parent.transform);
-                Tuple<int, int> coords = new Tuple<int, int>(i, j);
-                box.GetComponent<BoxManager>().InitBox(board[i,j], coords, m_puzzle_session);
-                // add each instantiated box to a list 
-                // give needed info. 1) is the box empty or not
+                if (row.row[rowIndex])
+                {
+                    consecutiveCells++;
+                }
+                else
+                {
+                    if (consecutiveCells > 0)
+                    {
+                        hint += consecutiveCells.ToString() + ",";
+                        consecutiveCells = 0;
+                    }
+                }
             }
+            if (consecutiveCells == row.row.Length) //if whole row is filled
+            {
+                hint += consecutiveCells.ToString() + ",";
+            }
+            hints.Add(hint.TrimEnd(','));
         }
+        return hints;
     }
+    List<string> CreateColumnsHints(PuzzleScriptable.Row[] rows)
+    {
+        int columnCount = rows[0].row.Length;
+        int rowCount = rows.Length;
+        List<string> hints = new();
+        for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
+        {
+            string hint = "";
+            int consecutiveCells = 0;
+
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+            {
+                if (rows[rowIndex].row[columnIndex])
+                {
+                    consecutiveCells++;
+                }
+                else
+                {
+                    if (consecutiveCells > 0 || (consecutiveCells > 0 && rowIndex == rowCount - 1)) //if consecutive cells end || if whole column is filled
+                    {
+                        hint += consecutiveCells.ToString() + ",";
+                        consecutiveCells = 0;
+                    }
+                }
+            }
+            if (consecutiveCells == rowCount) //if whole column is filled
+            {
+                hint += consecutiveCells.ToString() + ",";
+            }
+            hints.Add(hint.TrimEnd(','));
+        }
+        return hints;
+    }
+
+
 }

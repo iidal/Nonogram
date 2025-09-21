@@ -28,13 +28,16 @@ public class PuzzleSession : MonoBehaviour
     private int m_current_lives;
     [SerializeField] Image[] img_lives = new Image[3];
     [SerializeField] Sprite img_life_lost;
+
+    public PuzzleScriptable m_current_puzzle;
     /////
     public void StartPuzzle()
     {
-        m_board_creator.StartBoardInit(board, this);
+
+        m_board_creator.StartBoardInit(m_current_puzzle, this);
         m_endViewDialog.Hide();
         m_current_lives = m_max_lives;
-        
+
     }
 
     public void SwitchMarkMode()
@@ -80,5 +83,4 @@ public class PuzzleSession : MonoBehaviour
         m_endViewDialog.Show(true);
         return true;
     }
-
 }

@@ -14,7 +14,7 @@ public class PuzzleSession : MonoBehaviour
     int m_board_row_count = 5;
     int m_board_column_count = 5;
 
-    
+
 
     //////////////////////////////////////////////////////////////
 
@@ -60,8 +60,9 @@ public class PuzzleSession : MonoBehaviour
     {
         m_current_lives--;
         img_lives[m_current_lives].sprite = img_life_lost;
-        if (m_current_lives <= 0){
-             Debug.Log("game over");
+        if (m_current_lives <= 0)
+        {
+            Debug.Log("game over");
             m_endViewDialog.Show(false);
         }
     }
@@ -81,6 +82,37 @@ public class PuzzleSession : MonoBehaviour
         }
         Debug.Log("board finished");
         m_endViewDialog.Show(true);
+        //SavePuzzleData();
+        SaveSystem.UpdatePack(new Puzzle { id = m_current_puzzle.puzzleId, completed = true, points = 1 });
         return true;
+    }
+
+    void SavePuzzleData()
+    {
+        PackList packList = new PackList
+        {
+            packs = new List<Pack> {
+        new Pack {
+            id = "pack1",
+            puzzles = new List<Puzzle> {
+                new() { id = "test1", completed = true, points = 1 },
+            }
+        },
+        new Pack {
+            id = "pack2",
+            puzzles = new List<Puzzle> {
+                new() { id = "test2", completed = false, points = 1 },
+                new() { id = "test3", completed = false, points = 1 }
+            }
+        }
+        }
+        };
+
+        // Save it
+        SaveSystem.Save(packList);
+
+        // Load it
+        SaveSystem.Load();
+        Debug.Log("Loaded packs");
     }
 }

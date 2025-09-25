@@ -24,6 +24,7 @@ public class MenuManager : MonoBehaviour
     {
         m_packParent.gameObject.SetActive(false);
         m_puzzlesParent.gameObject.SetActive(false);
+        SaveSystem.Load();
         ReadResources();
     }
 
@@ -65,8 +66,9 @@ public class MenuManager : MonoBehaviour
     public void ReadResources()
     {
         Debug.Log("Reading resources for puzzle packs...");
-        
+
         // this is a placeholder, replace with actual logic to read puzzle packs
+        // Remember here to update created resources with data from save system, like completed puzzles etc
         m_numberOfPuzzlePacks = 1; // get pack folder amount / scriptable object amounts etc
 
         for (int i = 0; i < m_numberOfPuzzlePacks; i++)
